@@ -44,13 +44,13 @@ wavelengths    = wavelengthStart:stepSize:wavelengthStop;
 npoints        = length(wavelengths);
 
 
-%Power meter file id's and array initializations
-fid_powermeter_light = fopen([outPath '\' 'powermeter.csv'],'wt');
-fid_powermeter_dark =  fopen([outPath '\' 'powermeter_dark.csv'],'wt');
-fprintf(fid_powermeter_light,'%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\n','wavelength_in','wavelength_out','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','pm_lambda','power_mu','power_std','power_med','power_min','power_max');
-fprintf(fid_powermeter_dark, '%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\n','wavelength_in','wavelength_out','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','pm_lambda','power_mu','power_std','power_med','power_min','power_max');
-power_mu_vect       = zeros(1,npoints);
-power_mu_vect_dark  = zeros(1,npoints);
+% %Power meter file id's and array initializations
+% fid_powermeter_light = fopen([outPath '\' 'powermeter.csv'],'wt');
+% fid_powermeter_dark =  fopen([outPath '\' 'powermeter_dark.csv'],'wt');
+% fprintf(fid_powermeter_light,'%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\n','wavelength_in','wavelength_out','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','pm_lambda','power_mu','power_std','power_med','power_min','power_max');
+% fprintf(fid_powermeter_dark, '%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\n','wavelength_in','wavelength_out','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','pm_lambda','power_mu','power_std','power_med','power_min','power_max');
+% power_mu_vect       = zeros(1,npoints);
+% power_mu_vect_dark  = zeros(1,npoints);
 
 %Keithley file id's and array initializations
 fid_keithley_light = fopen([outPath '\'  'keithley.csv'],'wt');
@@ -70,17 +70,18 @@ for i=1:npoints
     %power_mu_vect = PowerMeter_Measure(i, fid_powermeter_light, wavelength_in, wavelength_out, power_mu_vect);
     
     % Camera call
-    %RPi_camera_capture(rpi, 
+    RPi_camera_capture(rpi, [PiPath '/light', 3, wavelength_in, 4500);
     
     if insta_dark_flag
         wavelength_in = wavelengths(i);
-           
+        
         [wavelength_out] = set_monochromator_dark(wavelength_in);  %uses Serial RS-232 connection
         
         voltage_mu_vect_dark = Keithley_Measure(i, fid_keithley_dark, wavelength_in, wavelength_out, voltage_mu_vect_dark, iterations, s);
         %power_mu_vect_dark = PowerMeter_Measure(i, fid_powermeter_dark, wavelength_in, wavelength_out, power_mu_vect_dark);
         
-%         Camera call
+        % Camera call
+        RPi_camera_capture(rpi, [PiPath '/dark'], 3, wavelength_in, 4500);
     end
 end
 fclose(fid_keithley_light);
@@ -97,6 +98,9 @@ else
         
         voltage_mu_vect_dark = Keithley_Measure(i, fid_keithley_dark, wavelength_in, wavelength_out, voltage_mu_vect_dark, iterations, s);
         %power_mu_vect_dark = PowerMeter_Measure(i, fid_powermeter_dark, wavelength_in, wavelength_out, power_mu_vect_dark);
+        
+        % Camera call
+        RPi_camera_capture(rpi, [PiPath '/dark'], 3, wavelength_in, 4500);
     end
     fclose(fid_keithley_dark);
     %fclose(fid_powermeter_dark);

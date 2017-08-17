@@ -70,17 +70,18 @@ for i=1:npoints
     %power_mu_vect = PowerMeter_Measure(i, fid_powermeter_light, wavelength_in, wavelength_out, power_mu_vect);
     
     % Camera call
-    %RPi_camera_capture(rpi, 
+    RPi_camera_capture(rpi, [PiPath '/light', 3, wavelength_in, 4500);
     
     if insta_dark_flag
         wavelength_in = wavelengths(i);
-           
+        
         [wavelength_out] = set_monochromator_dark(wavelength_in);  %uses Serial RS-232 connection
         
         voltage_mu_vect_dark = Keithley_Measure(i, fid_keithley_dark, wavelength_in, wavelength_out, voltage_mu_vect_dark, iterations, s);
         %power_mu_vect_dark = PowerMeter_Measure(i, fid_powermeter_dark, wavelength_in, wavelength_out, power_mu_vect_dark);
         
-%         Camera call
+        % Camera call
+        RPi_camera_capture(rpi, [PiPath '/dark'], 3, wavelength_in, 4500);
     end
 end
 fclose(fid_keithley_light);
@@ -97,6 +98,9 @@ else
         
         voltage_mu_vect_dark = Keithley_Measure(i, fid_keithley_dark, wavelength_in, wavelength_out, voltage_mu_vect_dark, iterations, s);
         %power_mu_vect_dark = PowerMeter_Measure(i, fid_powermeter_dark, wavelength_in, wavelength_out, power_mu_vect_dark);
+        
+        % Camera call
+        RPi_camera_capture(rpi, [PiPath '/dark'], 3, wavelength_in, 4500);
     end
     fclose(fid_keithley_dark);
     %fclose(fid_powermeter_dark);
