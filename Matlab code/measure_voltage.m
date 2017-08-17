@@ -1,9 +1,8 @@
 function [voltage_mu,voltage_std,voltage_volts,voltage_med,voltage_min,voltage_max] = measure_voltage(iterations,s)
 
 if s.status == 'closed'
-    error('Serial object closed or not configured properly');
+    fopen(s);
 end
-
 voltage_volts = zeros(1,iterations);
 i = 1;
 while(i < (iterations + 1))

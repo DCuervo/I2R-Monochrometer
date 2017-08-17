@@ -21,18 +21,20 @@ for i=1:ICOUNT
 end
 
 % Create serial object for Multimeter
-% Multimeter = serial('COM12');
-% set(Multimeter, 'BaudRate', 19200, 'Terminator','CR','Timeout',1);
-% fopen(Multimeter);
-% fprintf(Multimeter,'*rst'); %reset instrument
-% pause(10);
+Multimeter = serial('COM12');
+set(Multimeter, 'BaudRate', 19200, 'Terminator','CR','Timeout',1);
+fopen(Multimeter);
+fprintf(Multimeter,'*rst'); %reset instrument
+
+pause(0.5)
+
 
 % Create RPI ssh object
 rpi = ssh2_config('192.168.0.2', 'pi', 'raspberry');
 ssh2_command(rpi, 'sudo mount /dev/sda1 /mnt/');
     
 [ans, exists] = ssh2_command(rpi, ['if test -d ' PiPath '; then echo 1; else echo 0; fi']);
-while(cell2mat(exists))
+while(str2double(cell2mat(exists)))
     PiPath(end) = PiPath(end) + 1;
     [ans, exists] = ssh2_command(rpi, ['if test -d ' PiPath '; then echo 1; else echo 0; fi']);
 end
@@ -70,14 +72,14 @@ for i=1:npoints
     %power_mu_vect = PowerMeter_Measure(i, fid_powermeter_light, wavelength_in, wavelength_out, power_mu_vect);
     
     % Camera call
-    RPi_camera_capture(rpi, [PiPath '/light', 3, wavelength_in, 4500);
+    RPi_camera_capture(rpi, [PiPath '/light'], 3, wavelength_in, 4500);
     
     if insta_dark_flag
         wavelength_in = wavelengths(i);
         
         [wavelength_out] = set_monochromator_dark(wavelength_in);  %uses Serial RS-232 connection
         
-        voltage_mu_vect_dark = Keithley_Measure(i, fid_keithley_dark, wavelength_in, wavelength_out, voltage_mu_vect_dark, iterations, s);
+        voltage_mu_vect_dark = Keithley_Measure(i, fid_keithley_dark, wavelength_in, wavelength_out, voltage_mu_vect_dark, iterations, Multimeter);
         %power_mu_vect_dark = PowerMeter_Measure(i, fid_powermeter_dark, wavelength_in, wavelength_out, power_mu_vect_dark);
         
         % Camera call
