@@ -31,9 +31,9 @@ if (wavelength_in >= 600)
 end
 
 %Need to update; will cause a problem if/when we take measurement at NIR.
-if (wavelength_in == 1000)
-   filterNumber = 3;
-end
+%if (wavelength_in == 1000)
+%   filterNumber = 3;
+%end
 
 try    
     currentFilterNumber = get_filter(s);
