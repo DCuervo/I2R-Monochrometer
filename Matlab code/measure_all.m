@@ -11,7 +11,7 @@ end
 mkdir(newPath);
 outPath = newPath;
 
-PiPath = ['/mnt/' num2str(wavelengthStart) '_' num2str(wavelengthStop) '_' num2str(stepSize) '_' num2str(insta_dark_flag) '_' num2str(iterations) '_0'];
+PiPath = ['/mnt/Monochrometer_Data/' num2str(wavelengthStart) '_' num2str(wavelengthStop) '_' num2str(stepSize) '_' num2str(insta_dark_flag) '_' num2str(iterations) '_0'];
 
 %Ensure all serial ports are closed.
 I = instrfind;
