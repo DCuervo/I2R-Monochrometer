@@ -8,6 +8,7 @@ newPath = strcat(outPath, strcat(num2str(wavelengthStart), '_', num2str(waveleng
 while (exist(newPath))
     newPath(end) = newPath(end) + 1;
 end
+newPath = [newPath '\PowerMeasurement'];
 mkdir(newPath);
 outPath = newPath;
 
@@ -55,8 +56,8 @@ npoints        = length(wavelengths);
 % power_mu_vect_dark  = zeros(1,npoints);
 
 %Keithley file id's and array initializations
-fid_keithley_light = fopen([outPath '\PowerMeasurement\'  'keithley.csv'],'wt');
-fid_keithley_dark =  fopen([outPath '\PowerMeasurement\'  'keithley_dark.csv'],'wt');
+fid_keithley_light = fopen([outPath '\'  'keithley.csv'],'wt');
+fid_keithley_dark =  fopen([outPath '\'  'keithley_dark.csv'],'wt');
 fprintf(fid_keithley_light,'%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\n','wavelength_in','wavelength_out','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','pm_lambda','voltage_mu','voltage_std','voltage_med','voltage_min','voltage_max');
 fprintf(fid_keithley_dark, '%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\t%15s\n','wavelength_in','wavelength_out','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','pm_lambda','voltage_mu','voltage_std','voltage_med','voltage_min','voltage_max');
 voltage_mu_vect =       zeros(1,npoints);
@@ -99,8 +100,6 @@ else
         voltage_mu_vect_dark = Keithley_Measure(i, fid_keithley_dark, wavelength_in, wavelength_out, voltage_mu_vect_dark, iterations, s);
         %power_mu_vect_dark = PowerMeter_Measure(i, fid_powermeter_dark, wavelength_in, wavelength_out, power_mu_vect_dark);
         
-        % Camera call
-        RPi_camera_capture(rpi, [PiPath '/dark'], 3, wavelength_in, 4500);
     end
     fclose(fid_keithley_dark);
     %fclose(fid_powermeter_dark);
@@ -108,7 +107,7 @@ end
 
 
 
-fid_keithley = fopen([outPath '\PowerMeasurement\' 'keithley_final.csv'],'wt');
+fid_keithley = fopen([outPath '\' 'keithley_final.csv'],'wt');
 %fid_powermeter = fopen([outPath '\' 'powermeter_final.csv'],'wt');
 for i=1:npoints
     fprintf(fid_keithley,'%15s\t%15g\n',num2str(wavelengths(i)),voltage_mu_vect(i) - voltage_mu_vect_dark(i));
